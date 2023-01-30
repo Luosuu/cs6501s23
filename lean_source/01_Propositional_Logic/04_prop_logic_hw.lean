@@ -163,14 +163,6 @@ def pEval : prop_expr → (prop_var → bool) → bool
 | (pBinOp op e1 e2) i := op_sem op (pEval e1 i) (pEval e2 i) -- hw1
 -- | (pBinOp op e1 e2) i := (pEval e1 i) && (pEval e2 i) -- BUG!
 
-#reduce ¬e1
-
-def e_Nand := e1 ↑ e2
-def e_Nor := e1 × e2
-
-#reduce e_Nand
-#reduce e_Nor
-
 def all_true : prop_var → bool
 | _ := tt
 
@@ -183,8 +175,16 @@ def mixed: prop_var → bool
 | (prop_var.mk 2) := tt
 | (prop_var.mk _) := ff
 
-#reduce mixed v₁
+def e_not := ¬e1
+#reduce pEval e_not all_false
+def e_Nand := e1 ↑ e2
+#reduce pEval e_Nand all_true
+def e_Nor := e1 × e2
+#reduce pEval e_Nor mixed
+def e_complex := (e1∧e2)×(e3=>e4)∨(e5↑e6)
+#reduce pEval e_complex mixed 
 
+#reduce mixed v₁
 #reduce pEval (X ↑ Y) all_false 
 #reduce pEval (X × Y) all_true
 #reduce pEval (X × Y) mixed
