@@ -92,6 +92,7 @@ def e5 := e1 ↔ e1
 def e6 := X ⊕ ¬X
 def e7 := X ↑ Y
 def e8 := X × Y
+def e9 := X × Z 
 
 #reduce e7
 #reduce e8
@@ -173,15 +174,19 @@ def all_false : prop_var → bool
 | _ := ff
 
 def mixed: prop_var → bool
-| v₀ := tt
-| v₁ := ff
-| v₂ := tt
+| (prop_var.mk 0) := tt
+| (prop_var.mk 1) := ff
+| (prop_var.mk 2) := tt
+| (prop_var.mk _) := ff
 
+#reduce mixed v₁
 
 #reduce pEval (X ↑ Y) all_false 
 #reduce pEval (X × Y) all_true
+#reduce pEval (X × Y) mixed
 #reduce pEval ¬(X × Y)
 #reduce pEval True
 #reduce pEval ¬True
 #reduce pEval ((X×Y)↑(X∧Y)) all_false
 #reduce pEval ((e1×e2)↑(e1∧e2)) all_false
+#reduce pEval ((e1×e2)↑(e1∧e2)) mixed
