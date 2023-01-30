@@ -20,9 +20,21 @@ namespace cs6501
 inductive prop_var : Type
 | mk (n : ℕ)
 
+def v₀ := prop_var.mk 0
+def v₁ := prop_var.mk 1
+def v₂ := prop_var.mk 2
+
+inductive binop
+| opAnd
+| opOr
+| opImp
+| opXor
+
 -- Abstract syntax
 inductive prop_expr : Type
-| pTrue : prop_expr
+| pLit (b: bool)
+| pBinOp (op: binop) (e1 e2 : prop_expr)
+-- | pTrue : prop_expr
 | pFalse : prop_expr
 | pVar (v: prop_var) 
 | pNot (e : prop_expr) 
@@ -30,10 +42,31 @@ inductive prop_expr : Type
 | pOr (e1 e2 : prop_expr)
 | pImp (e1 e2 : prop_expr)
 | pIff (e1 e2 : prop_expr)
-| pXor (e1 e2 : prop_expr) 
+| pXor (e1 e2 : prop_expr)
 
 open prop_expr
 -- QUOTE.
+
+-- def lit_true := pTrue
+def lit_true' := pLit tt
+
+-- def e1:= pTrue
+-- def e2:= pFalse
+-- def X := pVar v₀
+-- def Y := pVar v₁
+-- def Z := pVar v₂
+
+-- def not_X := pNot X
+-- def not_not_X := pNot not_X
+-- def XandY := pAnd X Y
+
+-- #check XandY
+-- #reduce XandY
+-- #reduce X
+
+
+-- def notXandY := pNot XandY
+-- #reduce notXandY
 
 /- TEXT:
 We can now *overload* some predefined operators in Lean
@@ -44,12 +77,15 @@ TEXT. -/
 
 -- QUOTE:
 notation (name := var_mk) `[` v `]` :=  pVar v
-notation (name := pAnd) e1 ∧ e2 :=  pAnd e1 e2
+-- notation (name := pAnd) e1 ∧ e2 :=  pAnd e1 e2
+notation (name := pAnd) e1 ∧ e2 :=  pBinOp binop.opAnd e1 e2
 notation (name := pOr) e1 ∨ e2 :=  pOr e1 e2
 notation (name := pNot) ¬e := pNot e
 notation (name := pImp) e1 => e2 := pImp e1 e2
 notation (name := pIff) e1 ↔ e2 := pIff e1 e2
 notation (name := pXor) e1 ⊕ e2 := pXor e1 e2
+
+ 
 -- QUOTE.
 
 /- TEXT:
