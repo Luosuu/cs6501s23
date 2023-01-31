@@ -66,7 +66,7 @@ notation (name := pImp) e1 => e2 := pBinOp opImp e1 e2
 notation (name := pIff) e1 ↔ e2 := pBinOp opIff e1 e2
 notation (name := pXor) e1 ⊕ e2 := pBinOp opXor e1 e2
 notation (name := pNand) e1 ↑ e2 := pBinOp opNand e1 e2 -- nand
-notation (name := pNor) e1 × e2 := pBinOp opNor e1 e2
+notation (name := pNor) e1 `↓` e2 := pBinOp opNor e1 e2
 
 -- notation (name := pNor) e1 ↓ e2 := pBinOp opNor e1 e2 (error: ↓ unexpected token)
 
@@ -95,8 +95,8 @@ def e4 := e1 => e2  -- avoid overloading →
 def e5 := e1 ↔ e1
 def e6 := X ⊕ ¬X
 def e7 := X ↑ Y
-def e8 := X × Y
-def e9 := X × Z 
+def e8 := X ↓  Y
+def e9 := X ↓  Z 
 
 #reduce e7
 #reduce e8
@@ -179,18 +179,18 @@ def e_not := ¬e1
 #reduce pEval e_not all_false
 def e_Nand := e1 ↑ e2
 #reduce pEval e_Nand all_true
-def e_Nor := e1 × e2
+def e_Nor := e1 ↓  e2
 #reduce pEval e_Nor mixed
-def e_complex := (e1∧e2)×(e3=>e4)∨(e5↑e6)
+def e_complex := (e1∧e2)↓ (e3=>e4)∨(e5↑e6)
 #reduce pEval e_complex mixed 
 
 #reduce mixed v₁
 #reduce pEval (X ↑ Y) all_false 
-#reduce pEval (X × Y) all_true
-#reduce pEval (X × Y) mixed
-#reduce pEval ¬(X × Y)
+#reduce pEval (X ↓ Y) all_true
+#reduce pEval (X ↓ Y) mixed
+#reduce pEval ¬(X ↓ Y)
 #reduce pEval True
 #reduce pEval ¬True
-#reduce pEval ((X×Y)↑(X∧Y)) all_false
-#reduce pEval ((e1×e2)↑(e1∧e2)) all_false
-#reduce pEval ((e1×e2)↑(e1∧e2)) mixed
+#reduce pEval ((X↓Y)↑(X∧Y)) all_false
+#reduce pEval ((e1↓e2)↑(e1∧e2)) all_false
+#reduce pEval ((e1↓e2)↑(e1∧e2)) mixed
