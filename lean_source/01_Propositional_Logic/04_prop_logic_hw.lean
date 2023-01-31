@@ -1,6 +1,6 @@
 /-
 Tianle Zhong (computing id: fad3ew)
-In collaboration with Mr. Archit Uniyal (deu9yh)
+Note that I had discussion with Mr. Archit Uniyal (deu9yh) on this assignment.
 -/
 inductive prop_var : Type
 | mk (n : ℕ)
