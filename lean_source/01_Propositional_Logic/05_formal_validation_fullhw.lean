@@ -262,18 +262,40 @@ assume h,
 assumption,
 end
 
+-- theorem and_introduction:
+-- ∀ (e1 e2: prop_expr)
+--   (i: prop_var → bool),
+--   (pEval (e1 ∧ e2) i) = tt →  
+--   (pEval (e1 ∧ e2) i) = tt :=
+-- begin
+-- assume e1 e2 i,
+-- unfold pEval,
+-- unfold bin_op_sem,
+-- cases pEval e1 i,
+-- cases pEval e2 i,
+-- assume h,
+-- assumption,
+-- assume h,
+-- assumption,
+-- cases pEval e2 i,
+-- assume h,
+-- assumption,
+-- assume h,
+-- assumption
+-- end
+
 theorem and_introduction:
 ∀ (e1 e2: prop_expr)
   (i: prop_var → bool),
-  (pEval (e1 ∧ e2) i) = tt →  
+  (pEval e1 i) && (pEval e2 i)  = tt →  
   (pEval (e1 ∧ e2) i) = tt :=
 begin
 assume e1 e2 i,
 unfold pEval,
 unfold bin_op_sem,
 cases pEval e1 i,
-cases pEval e2 i,
-assume h,
+cases pEval e2 i, 
+assume h, 
 assumption,
 assume h,
 assumption,
@@ -281,7 +303,7 @@ cases pEval e2 i,
 assume h,
 assumption,
 assume h,
-assumption
+apply rfl
 end
 
 theorem and_elimination_left:
