@@ -284,25 +284,40 @@ end
 -- assumption
 -- end
 
-theorem and_introduction:
+-- theorem and_introduction:
+-- ∀ (e1 e2: prop_expr)
+--   (i: prop_var → bool),
+--   (pEval e1 i) && (pEval e2 i)  = tt →  
+--   (pEval (e1 ∧ e2) i) = tt :=
+-- begin
+-- assume e1 e2 i,
+-- unfold pEval,
+-- unfold bin_op_sem,
+-- cases pEval e1 i,
+-- cases pEval e2 i, 
+-- assume h, 
+-- assumption,
+-- assume h,
+-- assumption,
+-- cases pEval e2 i,
+-- assume h,
+-- assumption,
+-- assume h,
+-- apply rfl
+-- end
+
+theorem and_intro_valid:
 ∀ (e1 e2: prop_expr)
   (i: prop_var → bool),
-  (pEval e1 i) && (pEval e2 i)  = tt →  
+  (pEval e1 i = tt) →
+  (pEval e2 i = tt) →
   (pEval (e1 ∧ e2) i) = tt :=
 begin
 assume e1 e2 i,
-unfold pEval,
-unfold bin_op_sem,
-cases pEval e1 i,
-cases pEval e2 i, 
-assume h, 
-assumption,
-assume h,
-assumption,
-cases pEval e2 i,
-assume h,
-assumption,
-assume h,
+assume h1 h2,
+unfold pEval bin_op_sem,
+rw h1,
+rw h2,
 apply rfl
 end
 
@@ -327,6 +342,16 @@ apply rfl,
 assume h,
 apply rfl
 end
+
+-- theorem and_elim_left_valid:
+-- ∀ (e1 e2: prop_expr)
+--   (i: prop_var → bool),
+--   (pEval (e1 ∧ e2) i) = tt → 
+--   (pEval e1 i) = tt :=
+-- begin
+-- assume e1 e2 i,
+
+-- end
 
 theorem and_elimination_right:
 ∀ (e1 e2: prop_expr)
@@ -428,51 +453,95 @@ end
 -- theorem or_elimination:
 -- ∀ (e1 e2 e3: prop_expr)
 --   (i: prop_var → bool),
---   (pEval ((e1∨e2)∧(e1=>e3)∧(e2=>e3)) i) = tt →
+--   (pEval (e1 ∨ e2) i = tt) →
+--   (pEval (e1 => e3) i = tt) → 
+--   (pEval (e2 => e3) i = tt) → 
 --   (pEval e3 i) = tt:=
 -- begin
+-- unfold pEval bin_op_sem,
 -- assume e1 e2 e3 i,
+-- assume h1 h2 h3,
+-- cases pEval e1 i,
+-- repeat{
+--   repeat{
+--     cases pEval e2 i,
+--     repeat {
+--       cases pEval e3 i,
+--       contradiction,
+--       apply rfl,
+--     }
+--   }
+-- }
+-- end
+
+
+-- theorem iff_introduction:
+-- ∀ (e1 e2: prop_expr)
+--   (i: prop_var → bool),
+--   pEval (e1=>e2) i = tt →
+--   pEval (e2=>e1) i = tt → 
+--   pEval (e1↔e2) i = tt:=
+-- begin
+-- assume e1 e2 i,
 -- unfold pEval,
 -- unfold bin_op_sem,
 -- cases pEval e1 i,
 -- cases pEval e2 i,
--- cases pEval e3 i,
--- unfold bimp,
--- assume h,
--- assumption,
--- unfold bimp,
+-- unfold bimp biff,
 -- assume h,
 -- apply rfl,
--- cases pEval e3 i,
--- unfold bimp,
+-- unfold bimp biff,
+-- assume h,
+-- assumption,
+-- cases pEval e2 i,
+-- unfold bimp biff,
+-- assume h,
+-- assumption,
 -- assume h,
 -- assumption,
 -- end
 
-
+--how to use repeat?
 theorem iff_introduction:
 ∀ (e1 e2: prop_expr)
   (i: prop_var → bool),
-  (pEval ((e1=>e2)∧(e2=>e1) ) i) = tt →
-  (pEval (e1↔e2) i) = tt:=
+  pEval (e1=>e2) i = tt →
+  pEval (e2=>e1) i = tt → 
+  pEval (e1↔e2) i = tt:=
 begin
 assume e1 e2 i,
-unfold pEval,
-unfold bin_op_sem,
+unfold pEval bin_op_sem,
+assume h1 h2,
 cases pEval e1 i,
 cases pEval e2 i,
-unfold bimp biff,
-assume h,
 apply rfl,
-unfold bimp biff,
-assume h,
-assumption,
+contradiction,
 cases pEval e2 i,
-unfold bimp biff,
-assume h,
-assumption,
-assume h,
-assumption,
+contradiction,
+apply rfl
+end
+
+theorem iff_introduction_valid:
+∀ (e1 e2: prop_expr)
+  (i: prop_var → bool),
+  pEval (e1=>e2) i = tt →
+  pEval (e2=>e1) i = tt → 
+  pEval (e1↔e2) i = tt:=
+begin
+assume e1 e2 i,
+unfold pEval bin_op_sem,
+assume h1 h2,
+cases pEval e1 i,
+repeat{
+    cases pEval e2 i,
+    contradiction,
+    apply rfl,
+},
+repeat{
+    cases pEval e2 i,
+    apply rfl,
+    contradiction
+},
 end
 
 
@@ -550,48 +619,100 @@ end
 -- assumption,
 -- end
 
-theorem transitivity_of_arrow:
+-- theorem arrow_elimination_valid:
+-- ∀ (e1 e2: prop_expr)
+--   (i: prop_var → bool),
+--   (pEval (e1=>e2) i) = tt →
+--   (pEval e1 i) = tt → 
+--   (pEval e2 i) = tt:=
+-- begin
+-- assume e1 e2 i,
+-- unfold pEval,
+-- unfold bin_op_sem,
+-- assume h1 h2,
+-- cases pEval e1 i,
+-- cases pEval e2 i,
+-- contradiction,
+-- apply rfl,
+-- cases pEval e2 i,
+
+-- end
+
+-- theorem transitivity_of_arrow:
+-- ∀ (e1 e2 e3: prop_expr)
+--   (i: prop_var → bool),
+--   (pEval ((e1=>e2)∧(e2=>e3)) i) = tt →
+--   (pEval (e1=>e3) i) = tt:=
+-- begin
+-- assume e1 e2 e3 i,
+-- unfold pEval,
+-- unfold bin_op_sem,
+-- cases pEval e1 i,
+-- cases pEval e2 i,
+-- cases pEval e3 i,
+-- unfold bimp,
+-- assume h,
+-- apply rfl,
+-- unfold bimp,
+-- assume h,
+-- assumption,
+-- unfold bimp,
+-- cases pEval e3 i,
+-- unfold bimp,
+-- assume h,
+-- apply rfl,
+-- unfold bimp,
+-- assume h,
+-- assumption,
+-- cases pEval e2 i,
+-- cases pEval e3 i,
+-- unfold bimp,
+-- assume h,
+-- apply rfl,
+-- unfold bimp,
+-- assume h,
+-- apply rfl,
+-- cases pEval e3 i,
+-- unfold bimp,
+-- assume h,
+-- apply rfl,
+-- unfold bimp,
+-- assume h,
+-- apply rfl
+-- end
+
+theorem transitivity_of_arrow_valid:
 ∀ (e1 e2 e3: prop_expr)
   (i: prop_var → bool),
-  (pEval ((e1=>e2)∧(e2=>e3)) i) = tt →
+  (pEval (e1=>e2) i) = tt →
+  (pEval (e2=>e3) i) = tt →
   (pEval (e1=>e3) i) = tt:=
 begin
 assume e1 e2 e3 i,
 unfold pEval,
 unfold bin_op_sem,
+assume h1 h2,
 cases pEval e1 i,
+-- repeat{
+--     cases pEval e2 i,
+--     repeat{
+--       cases pEval e3 i,
+--       contradiction,
+--       apply rfl,
+--     }
+-- }
 cases pEval e2 i,
 cases pEval e3 i,
-unfold bimp,
-assume h,
 apply rfl,
-unfold bimp,
-assume h,
-assumption,
-unfold bimp,
+contradiction,
 cases pEval e3 i,
-unfold bimp,
-assume h,
 apply rfl,
-unfold bimp,
-assume h,
-assumption,
-cases pEval e2 i,
+contradiction,
 cases pEval e3 i,
-unfold bimp,
-assume h,
 apply rfl,
-unfold bimp,
-assume h,
 apply rfl,
-cases pEval e3 i,
-unfold bimp,
-assume h,
-apply rfl,
-unfold bimp,
-assume h,
-apply rfl
 end
+
 theorem contrapositive:
 ∀ (e1 e2: prop_expr)
   (i: prop_var → bool),
